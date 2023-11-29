@@ -1,0 +1,22 @@
+{% extends 'security/index.html.twig' %}
+
+{% block title %}
+	Giriş Yap
+{% endblock %}
+
+{% block authenticate %}
+	<form class="form" method="post">
+		<div class="title">Hesabına Giriş Yap</div>
+		{% if error %}
+			<div class="alert alert-danger">E-posta ya da şifre geçersiz.</div>
+		{% endif %}
+		<div class="form-group">
+			<input type="email" name="email" class="form-control" placeholder="E-posta" autocomplete="email"/>
+		</div>
+		<div class="form-group">
+			<input type="password" name="password" class="form-control" placeholder="Şifre" autocomplete="current-password"/>
+		</div>
+		<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+		<button type="submit" class="btn btn-outline-primary btn-block">Giriş Yap</button>
+	</form>
+{% endblock %}

@@ -1,0 +1,30 @@
+modules:
+  ROLE_SYSTEM_ADMIN:
+    controller: 'App\Controller\AdminController::index'
+    routes:
+      - name: "dormitory"
+        icon: "fa-solid fa-plus"
+        title: "Yeni Yurt Ekle"
+        route: "admin_dormitory"
+  ROLE_DORMITORY:
+    controller: 'App\Controller\DormitoryController::index'
+    routes:
+      - name: "rooms"
+        icon: "fa-solid fa-person-shelter"
+        title: "Odalar"
+        route: "dormitory_rooms"
+      - name: "students"
+        icon: "fa-solid fa-people-group"
+        title: "Konuklar"
+        route: "dormitory_students"
+  ROLE_STUDENT:
+    controller: 'App\Controller\StudentController::index'
+    routes:
+      - name: "faults"
+        icon: "fa-solid fa-wrench"
+        title: "Arıza Bildirimi"
+        route: "student_faults"
+      - name: "permissions"
+        icon: "fa-solid fa-calendar-days"
+        title: "İzinler"
+        route: "student_permissions"

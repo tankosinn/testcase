@@ -1,0 +1,19 @@
+{% extends 'index.html.twig' %}
+
+{% block title %}
+	Anasayfa
+{% endblock %}
+
+{% block page %}
+    <div class="page">
+        <div class="page-header">
+            Yurtlar
+            <a href="{{ path('admin_dormitory') }}" class="btn btn-sm btn-dark">
+                <i class="fa-solid fa-plus"></i>
+                Yeni Yurt Ekle
+            </a>
+        </div>
+        <div class="page-body">
+        </div>
+    </div>
+{% endblock %}

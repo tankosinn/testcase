@@ -1,0 +1,55 @@
+{# Index (Dashboard) - index.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+	{{ parent() }}
+{% endblock %}
+
+{% block body %}
+  {% set current_path = app.request.attributes.get('_route') %}
+  {% set userRole = app.user.getRoles()[0] %}
+  {% set modules = get_modules(userRole) %}
+	<nav class="navbar">
+      <div class="menu active"><i class="fa-solid fa-bars"></i></div>
+      <div class="links">
+        <a href="{{ path('app_index') }}" class="link {% if current_path == '' %}active{% endif %}">
+          <i class="fa-solid fa-house"></i>
+          {% if current_path != '' %}Anasayfa{% endif %}
+        </a>
+        {% if modules is not null %}
+          {% for module in modules %}
+            <a href="{#{ path(module.route) }#}" class="link {% if current_path == module.route %}active{% endif %}">
+              <i class="{{ module.icon }}"></i>
+              {% if current_path != module.route %}{{module.title}}{% endif %}
+            </a>
+          {% endfor %}
+        {% endif %}
+      </div>
+      <a href="#" class="link">
+        <i class="fa-brands fa-github"></i>
+        GitHub
+      </a>
+    </nav>
+    <div class="container">
+      <div class="header">
+        <div class="head">
+          <div class="menu"><i class="fa-solid fa-bars"></i></div>
+          <div class="logo">
+            <img src="{{ asset('build/images/logo.png') }}" alt="Livinsoft" />
+          </div>
+        </div>
+        <div class="profile">
+          {% if app.user.getPhoto() is not empty %}
+            <img src="{{ user.getPhoto() }}" alt="{{ user.getName() }}" />
+          {% endif %}
+          <div class="information">
+            <div class="title">{{ app.user.getName() }}</div>
+          </div>
+          <i class="fa-solid fa-chevron-down"></i>
+        </div>
+      </div>
+
+      {% block page %}{% endblock %}
+    </div>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends 'index.html.twig' %}
+
+{% block title %}
+	{{ room.name ?? 'Yeni Oda Ekle' }}
+{% endblock %}
+
+{% block page %}
+	<div class="page" {{ stimulus_controller('dormitory') }}>
+		<div class="page-header">
+			<div class="page-title">
+				{{ room.name ?? 'Yeni Oda Ekle' }}
+			</div>
+			<a href="{{ path('dormitory_rooms') }}" class="btn btn-sm btn-dark">
+				<i class="fa-solid fa-list-ul"></i>
+				Odalar
+			</a>
+		</div>
+		<div class="page-body">
+			<form class="form" {{ stimulus_target('dormitory', 'formRoom') }}>
+				<input type="hidden" name="id" value="{{ room.id ?? '' }}">
+				<div class="form-group">
+					<input type="text" name="name" value="{{ room.name ?? '' }}" id="name" class="form-control" placeholder="Oda Adı"/>
+					<div class="error" data-error-expose="name" data-error-target="#name"></div>
+				</div>
+				<div class="form-group">
+					<input type="number" name="capacity" value="{{ room.capacity ?? '' }}" id="capacity" class="form-control" placeholder="Kapasite"/>
+					<div class="error" data-error-expose="capacity" data-error-target="#capacity"></div>
+				</div>
+				<div class="form-footer">
+					<a href="javascript: void(0);" onclick="window.location.reload();" class="btn btn-outline-primary">
+						<i class="fa-solid fa-xmark"></i>
+						İptal Et
+					</a>
+					<a href="javascript: void(0);" class="btn btn-primary" {{ stimulus_action('dormitory', 'roomSubmit', 'click') }}>
+						<i class="fa-solid fa-check"></i>
+						Kaydet
+					</a>
+				</div>
+			</form>
+			<div class="loading d-none" {{ stimulus_target('dormitory', 'formLoadingRoom') }}>
+				<i class="fa-solid fa-spinner fa-spin"></i>
+				Oda Kaydediliyor
+			</div>
+		</div>
+	</div>
+{% endblock %}

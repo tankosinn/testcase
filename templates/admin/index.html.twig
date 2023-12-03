@@ -4,16 +4,72 @@
 	Anasayfa
 {% endblock %}
 
+
+{% block stylesheets %}
+	{{ parent() }}
+	<style>
+		.dormitory-name {
+			display: flex;
+			align-items: center;
+			gap: 5px;
+		}
+
+		.dormitory-name img {
+			width: 30px;
+			height: 30px;
+			object-fit: cover;
+			border-radius: 50%;
+		}
+	</style>
+{% endblock %}
+
 {% block page %}
-    <div class="page">
-        <div class="page-header">
-            Yurtlar
-            <a href="{{ path('admin_dormitory') }}" class="btn btn-sm btn-dark">
-                <i class="fa-solid fa-plus"></i>
-                Yeni Yurt Ekle
-            </a>
-        </div>
-        <div class="page-body">
-        </div>
-    </div>
+	<div class="page" {{ stimulus_controller('admin') }}>
+		<div class="page-header">
+			Yurtlar
+			<a href="{{ path('admin_dormitory_create') }}" class="btn btn-sm btn-dark">
+				<i class="fa-solid fa-plus"></i>
+				Yeni Yurt Ekle
+			</a>
+		</div>
+		<div class="page-body">
+			<div class="table-container">
+				<table>
+					<thead>
+						<tr>
+							<th class="text-center"></th>
+							<th>Yurt</th>
+							<th>E-posta</th>
+							<th>Telefon Numarası</th>
+							<th>Adres</th>
+							<th class="text-center">İşlemler</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for dormitory in  pagination %}
+							<tr>
+								<td class="text-center">{{ loop.index }}</td>
+								<td class="text-center dormitory-name">
+									<img src="{{ asset('uploads/' ~ dormitory.photo) }}" alt="{{ dormitory.name }}">
+									{{ dormitory.name }}
+								</td>
+								<td>{{ dormitory.email }}</td>
+								<td>{{ dormitory.phone }}</td>
+								<td>{{ dormitory.address }}</td>
+								<td class="text-center">
+									<a href="{{path('admin_dormitory_create', {slug: dormitory.slug})}}" class="btn btn-sm btn-outline-primary">
+										<i class="fa-regular fa-pen-to-square"></i>
+										Düzenle
+									</a>
+								</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+			<div class="pagination">
+				{{ knp_pagination_render(pagination) }}
+			</div>
+		</div>
+	</div>
 {% endblock %}

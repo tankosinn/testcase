@@ -6,7 +6,13 @@
  */
 
 // any CSS you import will output into a single css file (app.css in this case)
+import "toastr/toastr.scss";
 import "./styles/app.css";
 
 // start the Stimulus application
 import "./bootstrap";
+
+import { init } from "./js/main";
+
+// init application
+init();

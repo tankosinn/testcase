@@ -1,0 +1,53 @@
+{% extends 'index.html.twig' %}
+
+{% block title %}
+	{{ item.name ?? 'Yeni Eşya/Ürün Ekle' }}
+{% endblock %}
+
+{% block page %}
+	<div class="page" {{ stimulus_controller('dormitory') }}>
+		<div class="page-header">
+			<div class="page-title">
+				{{ room.name }}
+				{{ item.name ?? 'Yeni Eşya/Ürün Ekle' }}
+			</div>
+		</div>
+		<div class="page-body">
+			<form class="form" {{ stimulus_target('dormitory', 'formRoomInventory') }}>
+				<input type="hidden" name="id" value="{{ inventory.id ?? '' }}">
+				<div class="form-group">
+					<select name="item" id="item" class="form-control">
+						<option value="">Eşya/Ürün Seçiniz</option>
+						{% for item in items %}
+							<option value="{{ item.id }}">{{ item.name }}</option>
+						{% endfor %}
+					</select>
+					<div class="error" data-error-expose="item" data-error-target="#item"></div>
+				</div>
+				<div class="form-group">
+					<select name="userId" id="userId" class="form-control">
+						<option value="">Odada</option>
+						{% for user in users %}
+							<option value="{{ user.id }}">{{ user.name }}</option>
+						{% endfor %}
+					</select>
+					<div class="error" data-error-expose="userId" data-error-target="#userId"></div>
+				</div>
+				<div class="form-footer">
+					<a href="javascript: void(0);" onclick="window.location.reload();" class="btn btn-outline-primary">
+						<i class="fa-solid fa-xmark"></i>
+						İptal Et
+					</a>
+					<a href="javascript: void(0);" class="btn btn-primary" {{ stimulus_action('dormitory', 'roomInventorySubmit', 'click') }}>
+						<i class="fa-solid fa-check"></i>
+						Kaydet
+					</a>
+				</div>
+			</form>
+			<div class="loading d-none" {{ stimulus_target('dormitory', 'formLoadingRoomInventory') }}>
+				<i class="fa-solid fa-spinner fa-spin"></i>
+				Eşya/Ürün Kaydediliyor
+			</div>
+		</div>
+	</div>
+{% endblock %}

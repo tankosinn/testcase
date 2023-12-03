@@ -24,7 +24,7 @@ class CreateUserCommand extends Command
 {
     protected static $defaultName = 'app:create-user';
     protected static $defaultDescription = 'Create a user';
-    
+
     public function __construct(EntityManagerInterface $entityManager, UserRepository $userRepository, UserPasswordEncoderInterface $passwordEncoder, UrlGeneratorInterface $urlGenerator)
     {
         $this->entityManager = $entityManager;
@@ -43,7 +43,7 @@ class CreateUserCommand extends Command
 
         $io->title('User Creation Wizard');
 
-        $roleChoices = ['ROLE_SYSTEM_ADMIN', 'ROLE_DORMITORY', 'ROLE_STUDENT']; 
+        $roleChoices = ['ROLE_SYSTEM_ADMIN', 'ROLE_DORMITORY', 'ROLE_STUDENT'];
         $role = $io->choice("Select user role:", $roleChoices);
 
         $user->setRoles([$role]);
@@ -69,7 +69,7 @@ class CreateUserCommand extends Command
         switch ($role) {
             case 'ROLE_DORMITORY':
                 $io->text('Entering Information for Dormitory (Business)');
-            
+
                 $address = $io->ask('Enter address');
 
                 $user->setAddress($address);
@@ -87,7 +87,7 @@ class CreateUserCommand extends Command
                 $roomId = $io->ask("Enter roomId");
                 $user->setRoomId($roomId);
 
-                $genderChoices = ['Male', 'Female']; 
+                $genderChoices = ['Male', 'Female'];
                 $gender = $io->choice("Select user role:", $genderChoices);
 
                 $user->setGender(array_search($gender, $genderChoices));
@@ -96,7 +96,7 @@ class CreateUserCommand extends Command
                 $user->setCheckInDate(new \DateTime($checkInDate));
 
                 $departureDate = $io->ask("Enter departure date");
-                $user->setDepartureDate(new \DateTime($departureDate));           
+                $user->setDepartureDate(new \DateTime($departureDate));
                 break;
         }
 

@@ -3,59 +3,133 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Form\AdminDomitoryStoreFormType;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+
+use Knp\Component\Pager\PaginatorInterface;
+
+use App\Serializer\FormErrorSerializer;
 
 use App\Service\FileUploader;
 
 class AdminController extends AbstractController
 {
-    public function index(): Response
+    public function index(Request $request, PaginatorInterface $paginator): Response
     {
-        return $this->render('admin/index.html.twig');
+        $entityManager = $this->getDoctrine()->getManager();
+        $query = $entityManager->getRepository(User::class)->createQueryBuilder('u')
+            ->andWhere('JSON_CONTAINS(u.roles, :role) = true')
+            ->setParameter('role', '"ROLE_DORMITORY"')
+            ->orderBy('u.created_at', 'DESC')
+            ->getQuery();
+
+        $pagination = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            10
+        );
+
+        return $this->render('admin/index.html.twig', [
+            'pagination' => $pagination,
+        ]);
     }
 
     /**
-     * @Route("/yurt/{slug}", name="admin_dormitory", methods={"GET"})
+     * @Route("/yurt/{slug}", name="admin_dormitory_create", methods={"GET"})
      */
-    public function dormitory($slug = null): Response
+    public function dormitoryCreate($slug = null): Response
     {
-        return $this->render('admin/dormitory.html.twig');
+        $dormitory = null;
+
+        if ($slug) {
+            $entityManager = $this->getDoctrine()->getManager();
+
+            $dormitory = $entityManager->getRepository(User::class)->createQueryBuilder('u')
+                ->andWhere('u.slug = :slug')
+                ->setParameter('slug', $slug)
+                ->getQuery()
+                ->getOneOrNullResult();
+        }
+
+        return $this->render('admin/dormitory.html.twig', [
+            "dormitory" => $dormitory
+        ]);
     }
 
     /**
-     * @Route("/yurt", name="admin_dormitory_registration", methods={"POST"})
+     * @Route("/yurt/kaydet", name="admin_dormitory_store", methods={"POST"})
      */
-    public function dormitoryRegistration(Request $request, FileUploader $fileUploader, UserPasswordEncoderInterface $passwordEncoder, UserRepository $userRepository): Response 
+    public function dormitoryStore(Request $request, FormErrorSerializer $formErrorSerializer, FileUploader $fileUploader, UserPasswordEncoderInterface $passwordEncoder, UserRepository $userRepository): Response
     {
-        $user = new User();
-        
-        $user->setRoles(['ROLE_DORMITORY']);
+        $data = [
+            'id' => $request->get('id') ?? null,
+            'name' => $request->get('name'),
+            'email' => $request->get('email'),
+            'password' => $request->get('password'),
+            'phone' => $request->get('phone'),
+            'address' => $request->get('address'),
+            'photo' => $request->files->get('photo')
+        ];
 
-        $user->setName($request->get('name'));
+        if ($data['id']) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $user = $entityManager->getRepository(User::class)->find($data['id']);
 
-        $user->setEmail($request->get('email'));
+            if (!$user) {
+                $data['id'] = null;
 
-        $password = $request->get('password');
+                $user = new User();
+            }
+        } else {
+            $user = new User();
+        }
 
-        $user->setPassword($passwordEncoder->encodePassword($user, $password));
+        $form = $this->createForm(AdminDomitoryStoreFormType::class);
 
-        $user->setPhone($request->get('phone'));
-        
-        $user->setAddress($request->get('address'));
+        $form->submit($data);
 
-        $file = $request->files->get('photo');
+        if (!$form->isValid()) {
+            $errors = $formErrorSerializer->normalize($form);
 
-        $fileUploader->upload($file);
+            return $this->json([
+                "status" => "warning",
+                "message" => "Yurt kaydedilemedi.",
+                "errors" => $errors
+            ], JsonResponse::HTTP_BAD_REQUEST);
+        }
+
+        $user->setRoles(["ROLE_DORMITORY"]);
+        $user->setName($data["name"]);
+        $user->setEmail($data["email"]);
+
+        if (($data["id"] && $data["password"]) || !$data["id"]) {
+            $user->setPassword($passwordEncoder->encodePassword($user, $data["password"]));
+        }
+
+        $user->setPhone($data["phone"]);
+
+        if ($data["photo"]) {
+            if ($data["id"]) {
+                $fileUploader->remove($user->getPhoto());
+            }
+
+            $user->setPhoto($fileUploader->upload($data['photo']));
+        }
 
         $userRepository->add($user, true);
 
-        return $this->redirectToRoute('admin_dormitory_list');
+        return $this->json([
+            "status" => "success",
+            "message" => "Yurt kaydedildi.",
+            "slug" => $data["id"] ? $user->getSlug() : null
+        ], JsonResponse::HTTP_CREATED);
     }
-}   
+}
 
 

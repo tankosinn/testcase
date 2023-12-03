@@ -1,0 +1,97 @@
+{% extends 'index.html.twig' %}
+
+{% block title %}
+	Odalar
+{% endblock %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	<style>
+		.rooms {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 20px;
+		}
+
+		.room {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			flex-direction: column;
+			gap: 18px;
+			flex: 0 1 calc(20% - 20px);
+			padding: 18px 22px;
+			border: 1px solid rgba(191, 160, 160, 0.22);
+			border-radius: 6px;
+			background-color: #fff;
+			box-shadow: 0 0 12px 0 rgba(0, 0, 0, 0.05);
+		}
+
+		.room .header {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			flex-direction: column;
+			gap: 5px;
+		}
+
+		.room .header .name {
+			font-size: 24px;
+			font-weight: 600;
+		}
+
+		.room .header .resident {
+			font-size: 20px;
+			font-weight: 500;
+			color: #000B35;
+		}
+
+		@media(max-width: 1200px) {
+			.room {
+				flex: 0 1 calc(25% - 20px);
+			}
+		}
+
+		@media(max-width: 767px) and(min-width: 576px) {
+			.room {
+				flex: 0 1 calc(50% - 20px);
+			}
+		}
+
+		@media(max-width: 576px) {
+			.room {
+				flex: 0 1 calc(100% - 20px);
+			}
+		}
+	</style>
+{% endblock %}
+
+{% block page %}
+	<div class="page" {{ stimulus_controller('dormitory') }}>
+		<div class="page-header">
+			Odalar
+
+			<a href="{{ path('dormitory_room_create') }}" class="btn btn-sm btn-dark">
+				<i class="fa-solid fa-plus"></i>
+				Yeni Oda Ekle
+			</a>
+		</div>
+		<div class="page-body">
+			<div class="rooms">
+				{% for room in pagination %}
+					<div class="room">
+						<div class="header">
+							<div class="name">{{ room[0].name }}</div>
+							<div class="resident">{{ room.resident }}/{{ room[0].capacity }}</div>
+						</div>
+						<a href="{{ path('dormitory_room_detail', {slug: room[0].slug }) }}" class="btn btn-sm btn-primary">
+							Görüntüle
+						</a>
+					</div>
+				{% endfor %}
+			</div>
+			<div class="pagination">
+				{{ knp_pagination_render(pagination) }}
+			</div>
+		</div>
+	{% endblock %}

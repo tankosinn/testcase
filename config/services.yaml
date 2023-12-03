@@ -36,3 +36,7 @@ services:
   App\Service\FileUploader:
     arguments:
       $targetDirectory: "%uploads_directory%"
+
+  App\Dql\JsonContains:
+    tags:
+      - { name: doctrine.orm.query_parser }

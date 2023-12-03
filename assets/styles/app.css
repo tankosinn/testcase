@@ -48,6 +48,10 @@ a {
   padding: 10px;
 }
 
+.text-center {
+  text-align: center;
+}
+
 form,
 .form {
   display: flex;
@@ -87,12 +91,56 @@ form,
   flex-direction: row;
   flex-wrap: wrap;
   width: 100%;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
 }
 
 .form .form-horizontal .form-group {
   width: calc(25% - 18.75px);
+}
+
+.form .form-footer {
+  display: flex;
+  width: 100%;
+  align-self: stretch;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 15px;
+  font-size: 16px;
+  font-weight: 300;
+  color: #000b35;
+  border-radius: 5px;
+  padding: 15px;
+}
+
+.loading i {
+  font-size: 32px;
+}
+
+.error {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+  font-size: 12px;
+}
+
+.error .error-message {
+  display: flex;
+  color: #dc143c;
+  font-weight: 300;
+  animation: shake 1s ease 1; /* 0.5s: Animasyon süresi, ease-in-out: Zaman eğrisi, 3: 3 kez tekrarla */
+}
+
+.error-highlight {
+  border-color: #dc143c !important;
 }
 
 .btn-block {
@@ -263,6 +311,96 @@ form,
   font-weight: 500;
 }
 
+.container .page .page-header .page-title {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.container .page .page-body {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.table-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+  width: 100%;
+  overflow-x: auto;
+  filter: drop-shadow(0 0 12px rgba(19, 19, 19, 0.1));
+}
+
+.table-container .table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 20px;
+  font-weight: 500;
+  color: #000b35;
+  width: 100%;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow: hidden;
+  border-radius: 6px;
+  margin: 0;
+  padding: 0;
+  background-color: #fff;
+}
+
+th,
+td {
+  padding: 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  white-space: nowrap;
+}
+
+th {
+  background-color: #545963;
+  color: #fff;
+  font-weight: 600;
+}
+
+td {
+  font-weight: 400;
+  color: #2b2424;
+  font-size: 14px;
+}
+
+tr:hover {
+  background-color: #f2f2f2;
+}
+
+.pagination {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 5px;
+}
+
+.pagination span a,
+.pagination span.current {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 35px;
+  width: 35px;
+  background-color: #f2f2f2;
+  border-radius: 6px;
+  color: #2b2424;
+}
+
+.pagination span.current {
+  background-color: #000b35;
+  color: #fff;
+}
+
 @media (max-width: 768px) {
   .container .header .head .logo img {
     display: none;
@@ -270,5 +408,25 @@ form,
 
   .form .form-horizontal .form-group {
     width: 100%;
+  }
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-2px);
+  }
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(2px);
   }
 }

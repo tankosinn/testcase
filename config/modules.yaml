@@ -5,7 +5,7 @@ modules:
       - name: "dormitory"
         icon: "fa-solid fa-plus"
         title: "Yeni Yurt Ekle"
-        route: "admin_dormitory"
+        route: "admin_dormitory_create"
   ROLE_DORMITORY:
     controller: 'App\Controller\DormitoryController::index'
     routes:
@@ -17,14 +17,18 @@ modules:
         icon: "fa-solid fa-people-group"
         title: "Konuklar"
         route: "dormitory_students"
+      - name: "inventory"
+        icon: "fa-solid fa-warehouse"
+        title: "Envanter"
+        route: "dormitory_inventory"
   ROLE_STUDENT:
     controller: 'App\Controller\StudentController::index'
     routes:
-      - name: "faults"
-        icon: "fa-solid fa-wrench"
-        title: "Arıza Bildirimi"
-        route: "student_faults"
-      - name: "permissions"
-        icon: "fa-solid fa-calendar-days"
-        title: "İzinler"
-        route: "student_permissions"
+      #- name: "faults"
+      #  icon: "fa-solid fa-wrench"
+      #   title: "Arıza Bildirimi"
+      #  route: "student_faults"
+      # - name: "permissions"
+      #  icon: "fa-solid fa-calendar-days"
+      #  title: "İzinler"
+      #  route: "student_permissions"

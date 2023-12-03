@@ -18,12 +18,13 @@ class ModuleService
         $modules = Yaml::parseFile($this->moduleConfig)['modules'] ?? [];
 
         $formattedModules = [];
+
         foreach ($modules as $key => $roleBasedModules) {
             $formattedModules[$key] = $roleBasedModules['routes'];
         }
 
         if ($role) {
-            return $formattedModules[$role];
+            return $formattedModules[$role] ?? [];
         }
 
         return $formattedModules;

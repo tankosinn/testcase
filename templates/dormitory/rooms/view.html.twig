@@ -1,0 +1,118 @@
+{% extends 'index.html.twig' %}
+
+{% block title %}
+	{{ room[0].name }}
+{% endblock %}
+
+
+{% block stylesheets %}
+	{{ parent() }}
+	<style>
+		.capacity {
+			font-size: 20px;
+			color: #000B35;
+			font-weight: 600;
+		}
+
+		.student-name {
+			display: flex;
+			align-items: center;
+			gap: 5px;
+		}
+
+		.student-name img {
+			width: 30px;
+			height: 30px;
+			object-fit: cover;
+			border-radius: 50%;
+		}
+	</style>
+{% endblock %}
+
+{% block page %}
+	<div class="page" {{ stimulus_controller('dormitory') }}>
+		<div class="page-header">
+			<div class="page-title">
+				{{ room[0].name }}
+
+				<div class="capacity">
+					({{ room.resident }}/{{ room[0].capacity }})
+				</div>
+			</div>
+
+			<a href="{{ path('dormitory_room_create', {'slug': 'd001'}) }}" class="btn btn-sm btn-dark">
+				<i class="fa-solid fa-pen-to-square"></i>
+				Düzenle
+			</a>
+		</div>
+		<div class="page-body">
+			<div class="table-container">
+				<div class="table-header">Konuklar</div>
+				<table>
+					<thead>
+						<tr>
+							<th class="text-center"></th>
+							<th>Ad Soyad</th>
+							<th>Cinsiyet</th>
+							<th>E-posta</th>
+							<th>Telefon Numarası</th>
+							<th>Başlangıç Tarih</th>
+							<th>Bitiş Tarih</th>
+							<th class="text-center">İşlemler</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for student in  students %}
+							<tr>
+								<td class="text-center">{{ loop.index }}</td>
+								<td class="text-center student-name">
+									<img src="{{ asset('uploads/' ~ student.photo) }}" alt="{{ student.name }}">
+									{{ student.name }}
+								</td>
+								<td>
+									{{ student.gender ? "Kadın" : "Erkek"  }}
+								</td>
+								<td>{{ student.email }}</td>
+								<td>{{ student.phone }}</td>
+								<td>{{ student.checkInDate|date('d-m-Y') }}</td>
+								<td>{{ student.departureDate|date('d-m-Y') }}</td>
+								<td class="text-center">
+									<a href="{{ path('dormitory_student_create', {slug: student.slug}) }}" class="btn btn-sm btn-outline-primary">
+										<i class="fa-regular fa-pen-to-square"></i>
+										Düzenle
+									</a>
+								</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+			<div class="table-container">
+				<div class="table-header">
+					Envanter Yönetimi
+					<a href="{{ path('dormitory_room_inventory', {slug: room[0].slug}) }}" class="btn btn-sm btn-dark">
+						<i class="fa-solid fa-plus"></i>
+						Yeni Eşya/Ürün Ekle
+					</a>
+				</div>
+				<table>
+					<thead>
+						<tr>
+							<th class="text-center"></th>
+							<th>Eşya/Ürün</th>
+							<th>Durum</th>
+							<th class="text-center">İşlemler</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for student in  inventory %}
+							<tr>
+								<td class="text-center">{{ loop.index }}</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+{% endblock %}

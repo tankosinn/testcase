@@ -1,0 +1,101 @@
+{% extends 'index.html.twig' %}
+
+{% block title %}
+	{{ student.name ?? 'Yeni Konuk Ekle' }}
+{% endblock %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	<style>
+		.student-logo {
+			width: 50px;
+			height: 50px;
+			object-fit: cover;
+			border-radius: 50%;
+		}
+	</style>
+{% endblock %}
+
+{% block page %}
+	<div class="page" {{ stimulus_controller('dormitory') }}>
+		<div class="page-header">
+			<div class="page-title">
+				{% if student %}
+					<img class="student-logo" src="{{asset('uploads/' ~ student.photo)}}">
+				{% endif %}
+				{{ student.name ?? 'Yeni Konuk Ekle' }}
+			</div>
+			<a href="{{ path('dormitory_students') }}" class="btn btn-sm btn-dark">
+				<i class="fa-solid fa-list-ul"></i>
+				Konuklar
+			</a>
+		</div>
+		<div class="page-body">
+			<form class="form" {{ stimulus_target('dormitory', 'formStudent') }}>
+				<input type="hidden" name="id" value="{{ student.id ?? '' }}">
+				<div class="form-horizontal">
+					<div class="form-group">
+						<input type="text" name="name" value="{{ student.name ?? '' }}" id="name" class="form-control" placeholder="Ad Soyad"/>
+						<div class="error" data-error-expose="name" data-error-target="#name"></div>
+					</div>
+					<div class="form-group">
+						<input type="text" name="email" id="email" value="{{ student.email ?? '' }}" class="form-control" placeholder="E-posta" autocomplete="off" data-mask-email/>
+						<div class="error" data-error-expose="email" data-error-target="#email"></div>
+					</div>
+					<div class="form-group">
+						<input type="password" name="password" id="password" class="form-control" placeholder="{{ student ? 'Yeni ' : '' }}Şifre" autocomplete="off"/>
+						<div class="error" data-error-expose="password" data-error-target="#password"></div>
+					</div>
+					<div class="form-group">
+						<input type="text" name="phone" value="{{ student.phone ?? '90' }}" id="phone" class="form-control" placeholder="Telefon Numarası" data-mask-phone/>
+						<div class="error" data-error-expose="phone" data-error-target="#phone"></div>
+					</div>
+				</div>
+				<div class="form-group">
+					<select class="form-control" name="room" id="room">
+						<option value="">Oda Seçiniz</option>
+						{% for room in rooms %}
+							<option value="{{ room.id }}" {% if student and student.roomId == room.id %} selected {% endif %}>{{ room.name }}</option>
+						{% endfor %}
+					</select>
+					<div class="error" data-error-expose="room" data-error-target="#room"></div>
+				</div>
+				<div class="form-group">
+					<input type="text" name="checkInDate" value="{{ student is not null ? student.checkInDate|date('d-m-Y') : "now"|date('d-m-Y') }}" id="checkInDate" class="form-control" placeholder="Giriş Tarihi" data-mask-date/>
+					<div class="error" data-error-expose="checkInDate" data-error-target="#checkInDate"></div>
+				</div>
+				<div class="form-group">
+					<input type="text" name="departureDate" value="{{ student is not null ? student.departureDate|date('d-m-Y') : "now"|date('d-m-Y') }}" id="departureDate" class="form-control" placeholder="Çıkış Tarihi" data-mask-date/>
+					<div class="error" data-error-expose="departureDate" data-error-target="#departureDate"></div>
+				</div>
+				<div class="form-group">
+					<select class="form-control" name="gender" id="gender">
+						<option value="">Cinsiyet Seçiniz</option>
+						<option value="0" {% if student and student.gender != true %} selected {% endif %}>Erkek</option>
+						<option value="1" {% if student and student.gender %} selected {% endif %}>Kadın</option>
+					</select>
+					<div class="error" data-error-expose="gender" data-error-target="#gender"></div>
+				</div>
+				<div class="form-group">
+					<label>{{ student ? 'Yeni ' : '' }}Fotoğraf</label>
+					<input type="file" name="photo" id="photo" class="form-control" placeholder="Logo yükle">
+					<div class="error" data-error-expose="photo" data-error-target="#photo"></div>
+				</div>
+				<div class="form-footer">
+					<a href="javascript: void(0);" onclick="window.location.reload();" class="btn btn-outline-primary">
+						<i class="fa-solid fa-xmark"></i>
+						İptal Et
+					</a>
+					<a href="javascript: void(0);" class="btn btn-primary" {{ stimulus_action('dormitory', 'studentSubmit', 'click') }}>
+						<i class="fa-solid fa-check"></i>
+						Kaydet
+					</a>
+				</div>
+			</form>
+			<div class="loading d-none" {{ stimulus_target('dormitory', 'formLoadingStudent') }}>
+				<i class="fa-solid fa-spinner fa-spin"></i>
+				Konuk Kaydediliyor
+			</div>
+		</div>
+	</div>
+{% endblock %}
